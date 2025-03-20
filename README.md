@@ -1,22 +1,20 @@
 # Ansible Role: Elasticsearch Curator
 
-[![CI](https://github.com/geerlingguy/ansible-role-elasticsearch-curator/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-elasticsearch-curator/actions/workflows/ci.yml)
-
-An Ansible Role that installs [Elasticsearch Curator](https://github.com/elasticsearch/curator) on RedHat/CentOS or Debian/Ubuntu.
+Роль Ansible, которая устанавливает [Elasticsearch Curator](https://github.com/elasticsearch/curator) на RedHat/CentOS или Debian/Ubuntu.
 
 ## Requirements
 
-None, but it's a lot more helpful if you have Elasticsearch running somewhere!
+Нет, но будет намного полезнее, если у вас где-нибудь будет работать Elasticsearch!
 
-On RedHat/CentOS, make sure you have the EPEL repository configured, so the `python-pip` package can be installed. You can install the EPEL repo by simply adding `geerlingguy.repo-epel` to your playbook's roles.
+В RedHat/CentOS убедитесь, что у вас настроен репозиторий EPEL, чтобы можно было установить пакет `python-pip`. Вы можете установить репозиторий EPEL, просто добавив `geerlingguy.repo-epel` в список ролей вашего сценария.
 
 ## Role Variables
 
-Available variables are listed below, along with default values (see `defaults/main.yml`):
+Доступные переменные перечислены ниже вместе со значениями по умолчанию (see `defaults/main.yml`):
 
     elasticsearch_curator_version: ''
 
-The version of `elasticsearch-curator` to install. Available versions are listed on the [Python Package Index](https://pypi.org/project/elasticsearch-curator/). By default, no version is specified, so the latest version will be installed.
+Версия `elasticsearch-curator` для установки. Доступные версии перечислены в [Python Package Index](https://pypi.org/project/elasticsearch-curator/). По умолчанию версия не указана, поэтому будет установлена последняя версия.
 
     elasticsearch_curator_cron_jobs:
       - name: "Run elasticsearch curator actions."
@@ -24,17 +22,17 @@ The version of `elasticsearch-curator` to install. Available versions are listed
         minute: 0
         hour: 1
 
-A list of cron jobs. Typically you would run one cron job using the actions defined in `action.yml`, but you can split up cron jobs or use the `curator_cli` to run actions individually instead of via an action file. You can add any of `minute`, `hour`, `day`, `weekday`, and `month` to the cron jobs—values that are not explicitly set will default to `*`. You can also use `state` to define whether the job should be `present` or `absent`.
+Список заданий cron. Обычно вы запускаете одно задание cron, используя действия, определённые в `action.yml`, но вы можете разделить задания cron или использовать `curator_cli` для запуска действий по отдельности, а не через файл действий. Вы можете добавить в задания cron любые из `minute`, `hour`, `day`, `weekday` и `month` — значения, которые не заданы явно, будут иметь значение `*` по умолчанию. Вы также можете использовать `state` для определения того, должно ли задание быть `present` или `absent`.
 
     elasticsearch_curator_config_directory: ~/.curator
 
-The directory inside which Curator's configuration (and action file) will be stored.
+Каталог, в котором будет храниться конфигурация (и файл действий) Curator.
 
     elasticsearch_curator_hosts:
       - 'localhost:9200'
     elasticsearch_curator_http_auth: ''
 
-These variables control parameters used in the default `elasticsearch_curator_yaml`. If you define your own custom `elasticsearch_curator_yaml`, you may not need to define or override these variables. `_hosts` is a list of hosts with ports, and `_http_auth` is a basic `http_auth` `user:pass` string, if your Elasticsearch instance requires basic HTTP authorization.
+Эти переменные управляют параметрами, используемыми по умолчанию в `elasticsearch_curator_yaml`. Если вы определяете собственные `elasticsearch_curator_yaml` параметры, вам может не потребоваться определять или переопределять эти переменные.  `_hosts` — это список хостов с портами, а `_http_auth` — базовая `http_auth` `user:pass` строка, если для вашего экземпляра `Elasticsearch` требуется базовая HTTP-авторизация.
 
     elasticsearch_curator_yaml: |
       ---
@@ -55,7 +53,7 @@ These variables control parameters used in the default `elasticsearch_curator_ya
         logformat: default
         blacklist: ['elasticsearch', 'urllib3']
 
-This YAML goes into the file `~/.curator/curator.yml` and stores the connection details Elasticsearch Curator uses to when connecting to Elasticsearch, as well as Curator logging configuration.
+Этот файл YAML помещается в файл `~/.curator/curator.yml` и содержит сведения о подключении, которые `Elasticsearch Curator` использует при подключении к `Elasticsearch`, а также конфигурацию ведения журнала `Curator`.
 
     elasticsearch_curator_action_yaml: |
       ---
@@ -78,12 +76,12 @@ This YAML goes into the file `~/.curator/curator.yml` and stores the connection 
             unit_count: 45
             exclude:
 
-This YAML goes into the file `~/.curator/action.yml` and defines the actions Curator performs when the default cron job is run. See documentation: [Curator actions file](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/actionfile.html).
+Этот YAML-файл помещается в файл `~/.curator/action.yml` и определяет действия, которые выполняет `Curator` при запуске задания `cron` по умолчанию. См. [Curator actions file](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/actionfile.html).
 
     elasticsearch_curator_pip_package: 'python3-pip'
     elasticsearch_curator_pip_executable: "{{ 'pip3' if elasticsearch_curator_pip_package.startswith('python3') else 'pip' }}"
 
-System pip package which needs to be installed, and the `pip` executable to run. For older OSes or when using Python 2, you may need to override this and change these to `python-pip`, and `pip`, respectively.
+Системный пакет `pip`, который необходимо установить, и исполняемый файл `pip` для запуска. Для более старых операционных систем или при использовании `Python 2` вам может потребоваться изменить эти значения на `python-pip` и `pip` соответственно.
 
 ## Dependencies
 
